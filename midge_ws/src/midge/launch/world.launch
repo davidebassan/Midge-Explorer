@@ -13,7 +13,7 @@
   <include file="$(find midge)/launch/robot_description.launch"/>
 
   <!-- World File -->
-  <arg name="world_file" default="$(find midge)/worlds/empty.world"/>
+  <arg name="world_file" default="$(find midge)/worlds/house.world"/>
 
   <!-- Launch Gazebo World -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -30,5 +30,9 @@
         args="-urdf -param robot_description -model midge
               -x $(arg x) -y $(arg y) -z $(arg z)
               -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)"/>
+
+    <!--launch rviz-->
+  <node name="rviz" pkg="rviz" type="rviz" respawn="false"
+        args="-d $(find midge)/default.rviz"/>
 
 </launch>
