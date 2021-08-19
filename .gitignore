@@ -1,3 +1,4 @@
 midge_ws/build
 midge_ws/devel
 *.catkin_workspace
+*.idea
