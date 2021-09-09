@@ -2,12 +2,12 @@
 
 import rospy
 import cv2
+import random
 from cv_bridge import CvBridge
 from std_msgs.msg import String
 from actuators.actuators import Move
 from sensors.laser_scan import Laser
 from sensors.camera import Camera
-from utils.Coordinates import Coordinates
 from sensor_msgs.msg import LaserScan
 
 
@@ -54,14 +54,40 @@ if __name__ == '__main__':
     """
     midge = Midge()
 
+    """
+    # First approach: Scheduled Navigation
+    
     # Get laser information about obstacles
     laser_information = midge.retrieve_laser()
     print(laser_information.ranges)
     print("{0°: " + str(laser_information.ranges[0]) + "; 90°: " + str(laser_information.ranges[360]) + "; 180°: " + str(laser_information.ranges[719]) + ";")
 
+    max_distance = max(laser_information.ranges)
+    max_distance_degree = laser_information.ranges.index(max_distance) / 4
+    """
+    while True:
+        # Second approach: Random Navigation
+        # Get Laser information
+        laser_information = midge.retrieve_laser()
 
+        # Select a random degree that is > 2
+        retry = 0
+        bypass = False
+        degree = random.randint(0, 719)
+        while laser_information.ranges[degree] < 2 or (bypass is True and laser_information.ranges[360]):
+            degree = random.randint(0, 719)
+            retry += 1
 
+            # Note:          90
+            #              0   180
+            #               270
 
+            # Make a 180° degree rotation because my robot start from
+            if retry > 5:
+                degree = 180
+                retry = 0
+                # Do rotation and checks again
+                midge.actuators.rotate(degree)
+                bypass=True
 
-
-
+        midge.actuators.straight()
