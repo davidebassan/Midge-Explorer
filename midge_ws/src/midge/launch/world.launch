@@ -13,7 +13,7 @@
   <include file="$(find midge)/launch/robot_description.launch"/>
 
   <!-- World File -->
-  <arg name="world_file" default="$(find midge)/worlds/house.world"/>
+  <arg name="world_file" default="$(find midge)/worlds/empty_1.world"/>
 
   <!-- Launch Gazebo World -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
