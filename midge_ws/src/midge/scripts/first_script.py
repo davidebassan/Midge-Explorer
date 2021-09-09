@@ -74,6 +74,7 @@ if __name__ == '__main__':
         retry = 0
         bypass = False
         degree = random.randint(0, 719)
+        # TODO: Controllare da 10 gradi prima a 10 gradi dopo!
         while laser_information.ranges[degree] < 2 or (bypass is True and laser_information.ranges[360]):
             degree = random.randint(0, 719)
             retry += 1
