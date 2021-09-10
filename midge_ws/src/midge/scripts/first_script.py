@@ -19,6 +19,8 @@ class Midge:
         self.cv2_bridge = CvBridge()
         self.last_image = None
         self.last_laser_info = None
+        self.laser_MARGIN_DEGREE = 20
+        self.laser_MIN_DISTANCE = 1
 
     def retrieve_laser(self):
         """
@@ -47,6 +49,12 @@ class Midge:
     def motor_navigation(self):
         pass
 
+    def obstacles_near(self, laser_ranges):
+        for j in range((90 - self.laser_MARGIN_DEGREE) * 4, (90 + self.laser_MARGIN_DEGREE) * 4):
+            if laser_ranges[j] < self.laser_MIN_DISTANCE:
+                return True
+        return False
+
 
 if __name__ == '__main__':
     """
@@ -65,6 +73,27 @@ if __name__ == '__main__':
     max_distance = max(laser_information.ranges)
     max_distance_degree = laser_information.ranges.index(max_distance) / 4
     """
+
+    while True:
+        # Second approach: Random Navigation
+        # Get Laser information
+        laser_information = midge.retrieve_laser()
+
+
+        while not midge.obstacles_near(midge.retrieve_laser().ranges):
+            midge.actuators.straight()
+
+        rotation_degree = 11.25
+        while midge.obstacles_near(midge.retrieve_laser().ranges):
+            if rotation_degree > 180:
+                break
+            print(int(rotation_degree))
+            midge.actuators.rotate(rotation_degree)
+            rotation_degree = rotation_degree*2
+
+
+
+
     while True:
         # Second approach: Random Navigation
         # Get Laser information
@@ -74,21 +103,36 @@ if __name__ == '__main__':
         retry = 0
         bypass = False
         degree = random.randint(0, 719)
+
+
         # TODO: Controllare da 10 gradi prima a 10 gradi dopo!
-        while laser_information.ranges[degree] < 2 or (bypass is True and laser_information.ranges[360]):
+        obstacles_near = False
+        for i in range(degree-35, degree+35):
+            if laser_information.ranges[degree] != 0 and laser_information.ranges[degree] < 2:
+                obstacles_near = True
+
+        while obstacles_near or (bypass is False and laser_information.ranges[360] < 2):
             degree = random.randint(0, 719)
-            retry += 1
+
+            obstacles_near = False
+            for i in range(degree - 15, degree + 15):
+                if laser_information.ranges[degree] != 0 and laser_information.ranges[degree] < 2:
+                    obstacles_near = True
+                    retry += 1
 
             # Note:          90
             #              0   180
             #               270
 
-            # Make a 180° degree rotation because my robot start from
             if retry > 5:
-                degree = 180
+                degree = 719 # Is 180 / 4
                 retry = 0
                 # Do rotation and checks again
-                midge.actuators.rotate(degree)
-                bypass=True
 
+                midge.actuators.stop()
+                bypass = True
+
+            print(obstacles_near)
+
+        midge.actuators.rotate(degree/4)
         midge.actuators.straight()

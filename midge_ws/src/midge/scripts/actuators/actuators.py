@@ -15,7 +15,7 @@ class Move:
     def move(self, linear=False, angular=False, speed=False):
         pass
 
-    def rotate(self, degree, speed=10):
+    def rotate(self, degree, speed=40):
         """
             Execute a rotation:
             Note:    0
@@ -34,6 +34,8 @@ class Move:
         self.coords.angular.y = 0
         self.coords.angular.z = 0
 
+        degree = degree - 90
+
         # Convert all to radians
         angular_speed = speed*2*PI/360
         relative_angle = degree*2*PI/360
@@ -47,12 +49,10 @@ class Move:
         time_alpha = rospy.Time.now().to_sec()
         current_angle = 0
         # Perform rotation
-        while current_angle < relative_angle-0.5:
+        while current_angle < relative_angle:
             self.cmd_vel.publish(self.coords)
             time_beta = rospy.Time.now().to_sec()
             current_angle = angular_speed*(time_beta - time_alpha)
-            print("C: " + str(current_angle))
-            print("R: " + str(relative_angle))
         # Force stop rotation
         self.coords.angular.z = 0
         self.cmd_vel.publish(self.coords)
@@ -60,6 +60,16 @@ class Move:
     def straight(self, speed=0.5):
         # Reset all
         self.coords.linear.x = speed
+        self.coords.linear.y = 0
+        self.coords.linear.z = 0
+        self.coords.angular.x = 0
+        self.coords.angular.y = 0
+        self.coords.angular.z = 0
+        self.cmd_vel.publish(self.coords)
+
+    def stop(self):
+        # Reset all
+        self.coords.linear.x = 0
         self.coords.linear.y = 0
         self.coords.linear.z = 0
         self.coords.angular.x = 0
