@@ -13,6 +13,7 @@ class Laser:
         self.node = rospy.init_node('Laser_Scan', anonymous=True)
         self.laser_info = None
         self.topic = '/scan'
+        self.max_lidar_range = 30
 
     def get_laser_info(self):
         """

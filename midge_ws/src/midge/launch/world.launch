@@ -9,6 +9,9 @@
   <arg name="pitch" default="0"/>
   <arg name="yaw" default="0"/>
 
+  <!-- Launch gmapping -->
+  <include file="$(find midge)/launch/gmapping.launch.xml"/>
+
   <!-- Launch other relevant files-->
   <include file="$(find midge)/launch/robot_description.launch"/>
 

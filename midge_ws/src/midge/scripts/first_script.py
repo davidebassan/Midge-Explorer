@@ -19,7 +19,7 @@ class Midge:
         self.cv2_bridge = CvBridge()
         self.last_image = None
         self.last_laser_info = None
-        self.laser_MARGIN_DEGREE = 20
+        self.laser_MARGIN_DEGREE = 30
         self.laser_MIN_DISTANCE = 1
 
     def retrieve_laser(self):
@@ -74,11 +74,15 @@ if __name__ == '__main__':
     max_distance_degree = laser_information.ranges.index(max_distance) / 4
     """
 
+    # Exploration and Map Creation
+    # Slam Approach
+
+
+
     while True:
         # Second approach: Random Navigation
         # Get Laser information
         laser_information = midge.retrieve_laser()
-
 
         while not midge.obstacles_near(midge.retrieve_laser().ranges):
             midge.actuators.straight()
@@ -87,8 +91,10 @@ if __name__ == '__main__':
         while midge.obstacles_near(midge.retrieve_laser().ranges):
             if rotation_degree > 180:
                 break
-            print(int(rotation_degree))
-            midge.actuators.rotate(rotation_degree)
+            # Random direction of rotation
+            direction = random.choice([-1,1])
+            print(direction*rotation_degree)
+            midge.actuators.rotate(direction*rotation_degree)
             rotation_degree = rotation_degree*2
 
 
