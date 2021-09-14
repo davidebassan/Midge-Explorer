@@ -81,6 +81,9 @@ class Move:
         self.cmd_vel.publish(self.coords)
 
 
+    def go_to_point(self, x, y):
+        pass
+
     def set_speed(self, speed, linear=True, angular=False):
         """
             Sets speed for angular

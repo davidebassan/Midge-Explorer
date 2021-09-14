@@ -7,6 +7,7 @@ import tf
 from cv_bridge import CvBridge
 from std_msgs.msg import String
 from actuators.actuators import Move
+from exploration.exploration import Exploration
 from sensors.laser_scan import Laser
 from sensors.camera import Camera
 from sensor_msgs.msg import LaserScan
@@ -18,7 +19,7 @@ class Midge:
         self.actuators = Move()
         self.laser = Laser()
         self.camera = Camera()
-        self.tf_listener = Tf_listener()
+        self.exploration = Exploration()
         self.cv2_bridge = CvBridge()
         self.last_image = None
         self.last_laser_info = None
@@ -46,20 +47,12 @@ class Midge:
         self.last_image = ros_to_cv(image)
         return self.last_image
 
-    def get_pose(self):
-        self.self.tf_listener.get_transform()
-
-    def build_map(self):
-        pass
-
-    def motor_navigation(self):
-        pass
-
     def obstacles_near(self, laser_ranges):
         for j in range((90 - self.laser_MARGIN_DEGREE) * 4, (90 + self.laser_MARGIN_DEGREE) * 4):
             if laser_ranges[j] < self.laser_MIN_DISTANCE:
                 return True
         return False
+
 
 
 if __name__ == '__main__':
@@ -79,7 +72,11 @@ if __name__ == '__main__':
     max_distance = max(laser_information.ranges)
     max_distance_degree = laser_information.ranges.index(max_distance) / 4
     """
+    print((midge.exploration.get_transformed_position()))
 
+
+
+    """
     # Exploration and Map Creation
     # Slam Approach
     while True:
@@ -146,3 +143,4 @@ if __name__ == '__main__':
 
         midge.actuators.rotate(degree/4)
         midge.actuators.straight()
+        """
