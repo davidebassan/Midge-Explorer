@@ -34,7 +34,7 @@ class Move:
         self.coords.angular.y = 0
         self.coords.angular.z = 0
 
-        degree = degree - 90
+        degree = degree
 
         # Convert all to radians
         angular_speed = speed*2*PI/360
@@ -43,13 +43,16 @@ class Move:
         if degree > 0:
             # Clockwise rotation
             self.coords.angular.z = -abs(angular_speed)
+            print('clock: ' + str(self.coords.angular.z))
         else:
             self.coords.angular.z = abs(angular_speed)
+            print('un' + str(self.coords.angular.z))
 
         time_alpha = rospy.Time.now().to_sec()
         current_angle = 0
         # Perform rotation
-        while current_angle < relative_angle:
+        while current_angle < abs(relative_angle):
+
             self.cmd_vel.publish(self.coords)
             time_beta = rospy.Time.now().to_sec()
             current_angle = angular_speed*(time_beta - time_alpha)

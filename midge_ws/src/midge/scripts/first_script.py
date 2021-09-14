@@ -3,19 +3,23 @@
 import rospy
 import cv2
 import random
+import tf
 from cv_bridge import CvBridge
 from std_msgs.msg import String
 from actuators.actuators import Move
 from sensors.laser_scan import Laser
 from sensors.camera import Camera
+from sensors.tf_listener import Tf_listener
 from sensor_msgs.msg import LaserScan
 
 
 class Midge:
     def __init__(self):
+        self.node = rospy.init_node('Midge', anonymous=True)
         self.actuators = Move()
         self.laser = Laser()
         self.camera = Camera()
+        self.tf_listener = Tf_listener()
         self.cv2_bridge = CvBridge()
         self.last_image = None
         self.last_laser_info = None
@@ -42,6 +46,9 @@ class Midge:
         image = camera.get_camera_image()
         self.last_image = ros_to_cv(image)
         return self.last_image
+
+    def get_pose(self):
+        self.self.tf_listener.get_transform()
 
     def build_map(self):
         pass
@@ -76,9 +83,6 @@ if __name__ == '__main__':
 
     # Exploration and Map Creation
     # Slam Approach
-
-
-
     while True:
         # Second approach: Random Navigation
         # Get Laser information
@@ -87,15 +91,16 @@ if __name__ == '__main__':
         while not midge.obstacles_near(midge.retrieve_laser().ranges):
             midge.actuators.straight()
 
-        rotation_degree = 11.25
+        rotation_degree_steps = 20
+        rotation_degree = 0
+        direction = random.choice([-1,1])
         while midge.obstacles_near(midge.retrieve_laser().ranges):
             if rotation_degree > 180:
                 break
             # Random direction of rotation
-            direction = random.choice([-1,1])
-            print(direction*rotation_degree)
+            #print(direction*rotation_degree)
             midge.actuators.rotate(direction*rotation_degree)
-            rotation_degree = rotation_degree*2
+            rotation_degree = rotation_degree+rotation_degree_steps
 
 
 
