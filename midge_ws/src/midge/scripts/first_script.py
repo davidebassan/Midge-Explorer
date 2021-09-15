@@ -53,7 +53,8 @@ class Midge:
                 return True
         return False
 
-
+    def get_transformed_position(self):
+        return self.exploration.get_transformed_position()
 
 if __name__ == '__main__':
     """
@@ -72,10 +73,12 @@ if __name__ == '__main__':
     max_distance = max(laser_information.ranges)
     max_distance_degree = laser_information.ranges.index(max_distance) / 4
     """
-    print((midge.exploration.get_transformed_position()))
 
-
-
+    trans, rot = midge.get_transformed_position()
+    print(rot)
+    print(midge.exploration.get_position_in_map(trans[0], trans[1]))
+    print(midge.exploration.read_map(midge.exploration.get_position_in_map(trans[0], trans[1])))
+    midge.exploration.checkpoints_creation(trans, rot)
     """
     # Exploration and Map Creation
     # Slam Approach
