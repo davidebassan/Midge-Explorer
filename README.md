@@ -18,6 +18,11 @@
  sudo apt-get install ros-<version>-gazebo  
 ```
 
+### **RosBridge**
+```
+ sudo apt-get install ros-<version>-rosbridge-suite  
+```
+
 ## Installation
 ***
 ```
