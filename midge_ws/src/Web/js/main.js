@@ -9,6 +9,8 @@ var app = new Vue({
         message: null,
         image_topic: null,
         cmd_topic: null,
+        navigationViewer: null,
+        navigator: null
     },
 
     methods : {
@@ -23,6 +25,7 @@ var app = new Vue({
                 console.log('Connesso!')
                 this.logs.unshift('Connesso!')
                 this.set_camera()
+                this.set_navigator()
             })
             this.ros.on('error', (error) => {
                 console.log('Errore di connessione: ', error)
@@ -48,15 +51,27 @@ var app = new Vue({
                 port: 8080,
             })
         },
+
+        set_navigator: function(){
+            this.navigationViewer = new ROS2D.Viewer({
+                divID: 'navigator',
+                height: 540,
+                width: 540
+            });
+
+
+
+        }
+        /*
         set_cmd: function(){
             this.cmd_topic = new ROSLIB.Topic({
                 ros: this.ros,
                 name: '/cmd_vel',
-                messageType: 'geometry_msgs/Twist'
+                messageType: 'geometry_msgs/Twist',
             })
         }
 
-        move: function(linear, angular){
+        move: function(){
             this.message = new ROSLIB.Message({
                 linear: linear,
                 angular: angular
@@ -72,6 +87,6 @@ var app = new Vue({
             })
             this.set_cmd()
             this.cmd_topic.publish(this.message)
-        }
+        }*/
     },
 })

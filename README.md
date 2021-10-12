@@ -23,6 +23,10 @@
  sudo apt-get install ros-<version>-rosbridge-suite  
 ```
 
+### **MoveBase
+```
+ sudo apt-get install ros-<version>-move-base  
+```
 ## Installation
 ***
 ```

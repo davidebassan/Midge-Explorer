@@ -62,6 +62,16 @@ if __name__ == '__main__':
     """
     midge = Midge()
 
+    # Come prima cosa devo mappare,
+    # Per farlo uso GMAPPING
+    
+
+
+
+
+
+
+
     """
     # First approach: Scheduled Navigation
     
@@ -79,6 +89,12 @@ if __name__ == '__main__':
     print(midge.exploration.get_position_in_map(trans[0], trans[1]))
     print(midge.exploration.read_map(midge.exploration.get_position_in_map(trans[0], trans[1])))
     midge.exploration.checkpoints_creation(trans, rot)
+
+
+
+
+
+
     """
     # Exploration and Map Creation
     # Slam Approach

@@ -14,14 +14,19 @@
   <!-- Launch other relevant files-->
   <include file="$(find midge)/launch/robot_description.launch"/>
 
-  <!-- Launch gmapping -->
-  <include file="$(find mapping)/launch/gmapping.launch"/>
-
   <!-- Launch amcl -->
   <include file="$(find localizer)/launch/amcl.launch"/>
 
+  <!-- Launch gmapping -->
+  <include file="$(find mapping)/launch/gmapping.launch"/>
+
+
   <!-- World File -->
   <arg name="world_file" default="$(find midge)/worlds/empty_1.world"/>
+
+
+
+
 
   <!-- Launch Gazebo World -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
