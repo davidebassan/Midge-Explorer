@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 import rospy
 from geometry_msgs.msg import Twist
+from sensor_msgs.msg import Joy
+
 
 class Move:
     def __init__(self):
@@ -10,7 +12,18 @@ class Move:
         # Initialize the node
         # rospy.init_node('Move', anonymous=False)
         # Publisher Creation
+        self.joystick_topic = 'joy'
         self.cmd_vel = rospy.Publisher('cmd_vel', Twist, queue_size=10)
+
+    def controller(self, msg):
+        self.cmd_vel.publish(msg)
+
+    def joystick(self):
+        data = rospy.wait_for_message(self.joystick_topic, Joy)
+        self.coords.linear.x = 4*data.axes[1]
+        self.coords.angular.z = 4*data.axes[0]
+        print("data")
+        self.cmd_vel.publish(self.coords)
 
     def move(self, linear=False, angular=False, speed=False):
         pass

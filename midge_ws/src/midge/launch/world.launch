@@ -20,6 +20,8 @@
   <!-- Launch gmapping -->
   <include file="$(find mapping)/launch/gmapping.launch"/>
 
+  <!-- Launch joy -->
+  <include file="$(find joystick)/launch/joy.launch"/>
 
   <!-- World File -->
   <arg name="world_file" default="$(find midge)/worlds/empty_1.world"/>

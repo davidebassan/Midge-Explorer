@@ -56,15 +56,23 @@ class Midge:
     def get_transformed_position(self):
         return self.exploration.get_transformed_position()
 
+
 if __name__ == '__main__':
     """
         Main function
     """
     midge = Midge()
 
+    while True:
+        #msg = midge.retrieve_laser()
+        midge.actuators.joystick()
+
+        "cmd_vel = midge.exploration.move_avoid_obstacle(msg)"
+        "midge.actuators.controller(cmd_vel)"
+
     # Come prima cosa devo mappare,
     # Per farlo uso GMAPPING
-    
+
 
 
 
@@ -83,13 +91,13 @@ if __name__ == '__main__':
     max_distance = max(laser_information.ranges)
     max_distance_degree = laser_information.ranges.index(max_distance) / 4
     """
-
+    """
     trans, rot = midge.get_transformed_position()
     print(rot)
     print(midge.exploration.get_position_in_map(trans[0], trans[1]))
     print(midge.exploration.read_map(midge.exploration.get_position_in_map(trans[0], trans[1])))
     midge.exploration.checkpoints_creation(trans, rot)
-
+    """
 
 
 

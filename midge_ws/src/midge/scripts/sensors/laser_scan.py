@@ -25,3 +25,7 @@ class Laser:
             Take information from lidar sensor
         """
         self.laser_info = rospy.wait_for_message(self.topic, LaserScan)
+
+
+
+
