@@ -64,11 +64,14 @@ if __name__ == '__main__':
     midge = Midge()
 
     while True:
-        #msg = midge.retrieve_laser()
+        msg = midge.retrieve_laser()
         midge.actuators.joystick()
+        cmd_vel = midge.exploration.protection_obstacle(msg)
 
-        "cmd_vel = midge.exploration.move_avoid_obstacle(msg)"
-        "midge.actuators.controller(cmd_vel)"
+
+
+
+
 
     # Come prima cosa devo mappare,
     # Per farlo uso GMAPPING

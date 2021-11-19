@@ -22,11 +22,7 @@ class Move:
         data = rospy.wait_for_message(self.joystick_topic, Joy)
         self.coords.linear.x = 4*data.axes[1]
         self.coords.angular.z = 4*data.axes[0]
-        print("data")
         self.cmd_vel.publish(self.coords)
-
-    def move(self, linear=False, angular=False, speed=False):
-        pass
 
     def rotate(self, degree, speed=40):
         """

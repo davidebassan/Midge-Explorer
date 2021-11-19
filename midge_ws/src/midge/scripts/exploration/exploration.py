@@ -3,6 +3,7 @@ import rospy
 import tf
 from geometry_msgs.msg import Twist
 from nav_msgs.msg import OccupancyGrid
+from std_msgs.msg import String
 
 class Exploration:
     def __init__(self):
@@ -16,6 +17,7 @@ class Exploration:
         self.checkpoints = None
         self.obstacle = None
         self.obstacle_state = None
+        self.movement_instruction_assistant = rospy.Publisher('movement_assistant', String)
 
     def get_map(self):
         self.map = rospy.wait_for_message(self.topic, OccupancyGrid)
@@ -43,6 +45,8 @@ class Exploration:
 
     def angle_to_goal(self, rot):
         return tf.transformations.euler_from_quaternion(rot)
+
+
 
     """
     def checkpoints_creation(self, occupancy_grid,n=40):
@@ -76,6 +80,44 @@ class Exploration:
             'front_left':  min(min(msg.ranges[432:575]), 10),
             'left':   min(min(msg.ranges[576:719]), 10),
         }
+
+    def protection_obstacle(self, msg):
+        self.obstacle_description(msg)
+
+        if self.obstacle['front'] < 1 and self.obstacle['front_left'] > 1 and self.obstacle['front_right'] > 1:
+            self.movement_instruction_assistant.publish('Found obstacle in front')
+            linear_x = -0.6
+            angular_z = 0
+
+        elif self.obstacle['front'] > 1 and self.obstacle['front_left'] > 1 and self.obstacle['front_right'] < 1:
+            self.movement_instruction_assistant.publish('Found obstacle in front_right')
+            linear_x = 0
+            angular_z = 0.6
+
+        elif self.obstacle['front'] > 1 and self.obstacle['front_left'] < 1 and self.obstacle['front_right'] > 1:
+            self.movement_instruction_assistant.publish('Found obstacle in front_left')
+            linear_x = 0
+            angular_z = -0.6
+
+        elif self.obstacle['front'] < 1 and self.obstacle['front_left'] > 1 and self.obstacle['front_right'] < 1:
+            self.movement_instruction_assistant.publish('Found obstacle in front and front_right')
+            linear_x = -0.6
+            angular_z = 0.6
+
+        elif self.obstacle['front'] < 1 and self.obstacle['front_left'] < 1 and self.obstacle['front_right'] > 1:
+            self.movement_instruction_assistant.publish('Found obstacle in front and front_left')
+            linear_x = -0.6
+            angular_z = -0.6
+
+        elif self.obstacle['front'] < 1 and self.obstacle['front_left'] < 1 and self.obstacle['front_right'] < 1:
+            self.movement_instruction_assistant.publish('Found obstacle in front and front_left and front_right')
+            linear_x = -0.6
+            angular_z = 0.6
+
+        elif self.obstacle['front'] > 1 and self.obstacle['front_left'] < 1 and self.obstacle['front_right'] < 1:
+            self.movement_instruction_assistant.publish('Found obstacle in front_left and front_right')
+            linear_x = 0.6
+            angular_z = 0
 
     def get_cmd_avoid_obstacle(self):
         msg = Twist()

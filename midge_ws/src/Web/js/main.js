@@ -10,7 +10,9 @@ var app = new Vue({
         image_topic: null,
         cmd_topic: null,
         navigationViewer: null,
-        navigator: null
+        navigator: null,
+        movement_assistant_message: "",
+        movement_assistant: null
     },
 
     methods : {
@@ -59,9 +61,22 @@ var app = new Vue({
                 width: 540
             });
 
+        },
 
 
+        assistant: function(){
+            this.movement_assistant = new ROSLIB.Topic({
+                ros: this.ros,
+                name: '/movement_assistant',
+                messageType: std_msgs/String,
+            });
+
+            this.movement_assistant.subscribe(function(msg){
+                this.movement_assistant_message = msg
+                console.log("SIIIi")
+            });
         }
+
         /*
         set_cmd: function(){
             this.cmd_topic = new ROSLIB.Topic({

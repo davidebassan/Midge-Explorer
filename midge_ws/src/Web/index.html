@@ -17,63 +17,101 @@
     </head>
 
     <body>
-        <div id="app" class="container">
+    <div id="app">
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand" href="#">Midge Explorer</a>
+        <span class='relevance-text'>Status:
+            <span v-if="connected">
+                <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                </svg> Connected
+                <button @click="disconnect" class="btn btn-danger">Disconnect</button>
+            </span>
+            <span v-if="!connected" >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-circle-fill" viewBox="0 0 16 16">
+                  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+                </svg> Not Connected
+            </span>
+        </span>
+    </nav>
 
-            <!-- Connection -->
-            <div class="jumbotron">
-                <h1>Benvenuto in Midge Explorer</h1>
-                <p>Per procedere inserisci l'indirizzo del Rosbridge (x.x.x.x)</p>
+        <div class="container">
+            <br v-if="!connected"/>
+
+            <br v-if="!connected"/>
+            <br v-if="!connected"/>
+            <br v-if="!connected"/>
+
+            <div class="connect" v-if="!connected">
+                <div class="input-group mb-3">
+                  <input type="text" v-model="address" class="form-control" placeholder="x.x.x.x:xxxx" aria-describedby="basic-addon2">
+                  <div class="input-group-append">
+                    <button @click="connect" class="input-group-text" id="basic-addon2">Connect</button>
+                  </div>
+                </div>
+            </div>
+        </div>
+
+        <div v-if="connected" class="no-gutters p-0">
+
+            <div class="col-md-12">
+                <pre class="pre-scrollable">
+                <code v-for="log in logs">
+                {{ log }}
+                </code>
+                </pre>
             </div>
             <div class="row">
-                <div class="col-md-6">
-                    <h3>Stato connessione</h3>
-                    <p class="text-success" v-if="connected">Connesso</p>
-                    <p class="text-danger" v-if="!connected">Non connesso</p>
-                    <hr/>
-                    <label>Indirizzo Rosbridge</label>
-                    <input type="text"  v-model="address" />
-                    <button @click="connect" class="btn btn-success" v-if="!connected">Connetti</button>
-                    <button @click="disconnect" class="btn btn-danger" v-if="connected">Disconnetti</button>
-                </div>
-                <div class="col-md-6">
-                    <h5 class="text-center">Log</h5>
-                    <pre class="pre-scrollable">
-                        <code v-for="log in logs">
-                            {{ log }}
-                        </code>
-                    </pre>
-                </div>
+                <div class="p-3 mb-2 bg-warning text-dark">Movement Assistant: {{ movement_assistant_message }}</div>
             </div>
 
-            <!-- Camera View, Sensors Value and Mapping -->
+            <div class="row">
+                <div class="camera" id="live_camera">
 
-            <!-- Remote Control --->
-            <br/>
+
+                </div>
+
+
+            </div>
+            <!--
             <div class="row">
                     <div class="col-md-12">
                         <div class="camera-bundle">
                             <h5 class="text-center">Camera</h5>
-                            <!-- Camera View -->
                             <div class="camera" id='live_camera'>
-                                <div class="wrapper">
-                                    <div id="joystick">
-                                    </div>
-                                </div>
                             </div>
                         </div>
                         <div class="navigator" id="navigator">
-
                         </div>
                     </div>
                     <div class="col-md-6 sensor">
                         <h5 class="text-center">Sensori</h5>
                     </div>
                 </div>
-            </div>
+
+            -->
+
+
         </div>
+    </div>
+        <!--
+
+
+            !-- Connection --
+            <div class="jumbotron">
+
+            </div>
+
+
+            !-- Camera View, Sensors Value and Mapping --
+
+            !-- Remote Control ---
+            <br/>
+
+
+
+    -->
     </body>
-
-
     <script type="text/javascript" src="js/main.js"></script>
     <script type="text/javascript" src="js/joystick.js"></script>
 </html>
