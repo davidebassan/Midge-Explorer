@@ -12,7 +12,8 @@ var app = new Vue({
         navigationViewer: null,
         navigator: null,
         movement_assistant_message: "",
-        movement_assistant: null
+        movement_assistant: null,
+        grid: null
     },
 
     methods : {
@@ -21,28 +22,30 @@ var app = new Vue({
             this.logs.unshift('Connessione a rosbridge...')
             this.ros = new ROSLIB.Ros({
                 url: "ws://" + this.address + ":9090"
-            })
+            });
             this.ros.on('connection', () => {
                 this.connected=true
                 console.log('Connesso!')
                 this.logs.unshift('Connesso!')
                 this.set_camera()
                 this.set_navigator()
-            })
+            });
             this.ros.on('error', (error) => {
                 console.log('Errore di connessione: ', error)
                 this.logs.unshift('Errore di connessione: ', error)
-            })
+            });
             this.ros.on('close', () => {
                 this.connected=false
                 console.log('Connessione chiusa')
                 this.logs.unshift('Connessione chiusa')
-            })
+            });
         },
+
         disconnect: function(){
             this.ros.close()
             this.connected=false
         },
+
         set_camera: function(){
             this.cameraViewer = new MJPEGCANVAS.Viewer({
                 divID: 'live_camera',
@@ -53,17 +56,58 @@ var app = new Vue({
                 port: 8080,
             })
         },
-
         set_navigator: function(){
-            this.navigationViewer = new ROS2D.Viewer({
-                divID: 'navigator',
-                height: 540,
-                width: 540
+            this.navigation_viewer = new ROS3D.Viewer({
+                divID : 'navigator',
+                width : 720,
+                height : 540,
+                antialias : true,
+                intensity : 1.0,
+                cameraPose : {x : -1, y : 0, z : 20},
+                displayPanAndZoomFrame : true
             });
 
+            this.tf_client = new ROSLIB.TFClient({
+                ros : this.ros,
+                angularThres : 0.01,
+                transThres : 0.01,
+                rate : 10.0,
+                fixedFrame : '/map'
+            });
+
+            this.occupancy_grid = new ROS3D.OccupancyGridClient({
+                ros : this.ros,
+                rootObject : this.navigation_viewer.scene,
+                continuous : true
+            });
+
+            this.pose_array = new ROS3D.PoseArray({
+                ros: this.ros,
+                topic: '/particlecloud',
+                tfClient: this.tf_client,
+                rootObject: this.navigation_viewer.scene
+            });
+
+            /*
+            this.pose = new ROS3D.Pose({
+                ros: this.ros,
+                topic: '/particlecloud',
+                keep: 10,
+                length: 10,
+                tfClient: this.tf_client,
+                rootObject: this.navigation_viewer.scene
+            })
+
+            this.odometry = new ROS3D.Odometry({
+                ros: this.ros,
+                tfClient: this.tf_client,
+                rootObject: this.navigation_viewer.scene
+            })
+            */
         },
 
 
+        /*
         assistant: function(){
             this.movement_assistant = new ROSLIB.Topic({
                 ros: this.ros,
@@ -77,7 +121,7 @@ var app = new Vue({
             });
         }
 
-        /*
+
         set_cmd: function(){
             this.cmd_topic = new ROSLIB.Topic({
                 ros: this.ros,
@@ -102,6 +146,12 @@ var app = new Vue({
             })
             this.set_cmd()
             this.cmd_topic.publish(this.message)
-        }*/
+        }
+            */
     },
+
+
 })
+
+
+

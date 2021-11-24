@@ -26,12 +26,13 @@ pre code {
     overflow-wrap: normal;
     white-space: pre;
 }
-
+/*
 canvas{
     display: inline-block !important;
     width: 100% !important;
     height: auto !important;
 }
+*/
 
 .sensor{
     display: inline-block;

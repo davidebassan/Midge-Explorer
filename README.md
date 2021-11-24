@@ -18,9 +18,10 @@
  sudo apt-get install ros-<version>-gazebo  
 ```
 
-### **RosBridge**
+### **RosBridge and Tf2 Web Republisher**
 ```
- sudo apt-get install ros-<version>-rosbridge-suite  
+ sudo apt-get install ros-<version>-rosbridge-suite
+ sudo apt-get install ros-<version>-tf2-web-republisher  
 ```
 
 ### **MoveBase**

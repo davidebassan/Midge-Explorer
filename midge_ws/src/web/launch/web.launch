@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+    <arg name="video_port" default="8080"/>
+    <arg name="websocket_port" default="9090"/>
+
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
+        <arg name="port" value="$(arg websocket_port)" />
+    </include>
+
+    <node name="tf2_web_republisher" pkg="tf2_web_republisher" type="tf2_web_republisher" respawn="false" output="screen"/>
+
+    <node pkg="web_video_server" type="web_video_server" name="web_video_server">
+      <param name="type" value="vp8"/>
+      <param name="port" value="$(arg video_port)"/>
+    </node>
+
+    <node pkg="web" name="web_server" type="web.sh" output="screen"/>
+
+</launch>
