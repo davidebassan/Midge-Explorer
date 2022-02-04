@@ -27,7 +27,7 @@
   <include file="$(find web)/launch/web.launch" />
 
   <!-- World File -->
-  <arg name="world_file" default="$(find midge)/worlds/empty_1.world"/>
+  <arg name="world_file" default="$(find midge)/worlds/house.world"/>
 
 
 

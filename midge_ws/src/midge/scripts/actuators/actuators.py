@@ -14,15 +14,19 @@ class Move:
         # Publisher Creation
         self.joystick_topic = 'joy'
         self.cmd_vel = rospy.Publisher('cmd_vel', Twist, queue_size=10)
+        self.joy_subscriber = rospy.Subscriber(self.joystick_topic, Joy, self.joystick)
 
     def controller(self, msg):
         self.cmd_vel.publish(msg)
 
-    def joystick(self):
-        data = rospy.wait_for_message(self.joystick_topic, Joy)
+    def joystick(self, data):
         self.coords.linear.x = 4*data.axes[1]
         self.coords.angular.z = 4*data.axes[0]
+
+
+    def joystick_move(self):
         self.cmd_vel.publish(self.coords)
+
 
     def rotate(self, degree, speed=40):
         """

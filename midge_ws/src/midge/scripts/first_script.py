@@ -11,7 +11,7 @@ from exploration.exploration import Exploration
 from sensors.laser_scan import Laser
 from sensors.camera import Camera
 from sensor_msgs.msg import LaserScan
-
+from web.web import Web
 
 class Midge:
     def __init__(self):
@@ -21,6 +21,7 @@ class Midge:
         self.camera = Camera()
         self.exploration = Exploration()
         self.cv2_bridge = CvBridge()
+        self.web = Web()
         self.last_image = None
         self.last_laser_info = None
         self.laser_MARGIN_DEGREE = 30
@@ -64,113 +65,14 @@ if __name__ == '__main__':
     midge = Midge()
 
     while True:
-        msg = midge.retrieve_laser()
-        midge.actuators.joystick()
-        cmd_vel = midge.exploration.protection_obstacle(msg)
+        # Move Avoid Obstacle
+        if midge.web.get_navigation_method() == 'joy':
+            midge.actuators.joystick_move()
+            msg = midge.retrieve_laser()
+            cmd_vel = midge.exploration.protection_obstacle(msg)
+        else:
+            msg = midge.retrieve_laser()
+            cmd_vel = midge.exploration.move_avoid_obstacle(msg)
+            midge.actuators.controller(cmd_vel)
 
 
-
-
-
-
-    # Come prima cosa devo mappare,
-    # Per farlo uso GMAPPING
-
-
-
-
-
-
-
-
-    """
-    # First approach: Scheduled Navigation
-    
-    # Get laser information about obstacles
-    laser_information = midge.retrieve_laser()
-    print(laser_information.ranges)
-    print("{0°: " + str(laser_information.ranges[0]) + "; 90°: " + str(laser_information.ranges[360]) + "; 180°: " + str(laser_information.ranges[719]) + ";")
-
-    max_distance = max(laser_information.ranges)
-    max_distance_degree = laser_information.ranges.index(max_distance) / 4
-    """
-    """
-    trans, rot = midge.get_transformed_position()
-    print(rot)
-    print(midge.exploration.get_position_in_map(trans[0], trans[1]))
-    print(midge.exploration.read_map(midge.exploration.get_position_in_map(trans[0], trans[1])))
-    midge.exploration.checkpoints_creation(trans, rot)
-    """
-
-
-
-
-
-    """
-    # Exploration and Map Creation
-    # Slam Approach
-    while True:
-        # Second approach: Random Navigation
-        # Get Laser information
-        laser_information = midge.retrieve_laser()
-
-        while not midge.obstacles_near(midge.retrieve_laser().ranges):
-            midge.actuators.straight()
-
-        rotation_degree_steps = 20
-        rotation_degree = 0
-        direction = random.choice([-1,1])
-        while midge.obstacles_near(midge.retrieve_laser().ranges):
-            if rotation_degree > 180:
-                break
-            # Random direction of rotation
-            #print(direction*rotation_degree)
-            midge.actuators.rotate(direction*rotation_degree)
-            rotation_degree = rotation_degree+rotation_degree_steps
-
-
-
-
-    while True:
-        # Second approach: Random Navigation
-        # Get Laser information
-        laser_information = midge.retrieve_laser()
-
-        # Select a random degree that is > 2
-        retry = 0
-        bypass = False
-        degree = random.randint(0, 719)
-
-
-        # TODO: Controllare da 10 gradi prima a 10 gradi dopo!
-        obstacles_near = False
-        for i in range(degree-35, degree+35):
-            if laser_information.ranges[degree] != 0 and laser_information.ranges[degree] < 2:
-                obstacles_near = True
-
-        while obstacles_near or (bypass is False and laser_information.ranges[360] < 2):
-            degree = random.randint(0, 719)
-
-            obstacles_near = False
-            for i in range(degree - 15, degree + 15):
-                if laser_information.ranges[degree] != 0 and laser_information.ranges[degree] < 2:
-                    obstacles_near = True
-                    retry += 1
-
-            # Note:          90
-            #              0   180
-            #               270
-
-            if retry > 5:
-                degree = 719 # Is 180 / 4
-                retry = 0
-                # Do rotation and checks again
-
-                midge.actuators.stop()
-                bypass = True
-
-            print(obstacles_near)
-
-        midge.actuators.rotate(degree/4)
-        midge.actuators.straight()
-        """

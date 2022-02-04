@@ -37,18 +37,21 @@
     <limit effort="10000" velocity="1000" />
     <dynamics damping="1.0" friction="1.0" />
   </joint>
+
   <joint name="camera_joint" type="fixed">
     <origin xyz="0.26 0 0" rpy="0 0 0" />
     <parent link="chassis"/>
     <child link="camera" />
     <axis xyz="0 1 0"/>
   </joint>
+
   <joint name="hokuyo_joint" type="fixed">
     <origin xyz="0.2 0 0.2" rpy="0 0 0" />
     <parent link="chassis"/>
     <child link="hokuyo" />
     <axis xyz="0 1 0"/>
   </joint>
+
   <joint name="robot_footprint_joint" type="fixed">
     <origin xyz="0 0 0" rpy="0 0 0" />
     <parent link="robot_footprint"/>
@@ -113,6 +116,7 @@
     </visual>
 
   </link>
+
   <link name="left_wheel">
     <inertial>
       <mass value="5"/>
@@ -165,6 +169,7 @@
     </visual>
 
   </link>
+
   <link name="camera">
     <inertial>
       <mass value="0.1"/>

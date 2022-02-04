@@ -1,6 +1,8 @@
 var app = new Vue({
     el: '#app',
     data: {
+        navigation_method: null,
+        autonomous: false,
         connected: false,
         ros: null,
         address: '0.0.0.0',
@@ -15,7 +17,6 @@ var app = new Vue({
         movement_assistant: null,
         grid: null
     },
-
     methods : {
         connect: function(){
             console.log('Connessione a rosbridge...')
@@ -29,6 +30,8 @@ var app = new Vue({
                 this.logs.unshift('Connesso!')
                 this.set_camera()
                 this.set_navigator()
+                this.set_navigation()
+                this.set_movement_assistant()
             });
             this.ros.on('error', (error) => {
                 console.log('Errore di connessione: ', error)
@@ -44,6 +47,36 @@ var app = new Vue({
         disconnect: function(){
             this.ros.close()
             this.connected=false
+            /* Disconnect also from video and navigator */
+        },
+
+        autonomous_function: function(){
+            if(this.autonomous){
+                this.autonomous = false
+                let msg = new ROSLIB.Message({data:'joy'})
+                this.navigation_method.publish(msg)
+            }
+            else{
+                this.autonomous = true
+                let msg = new ROSLIB.Message({data:'auto'})
+                this.navigation_method.publish(msg)
+            }
+        },
+
+        set_navigation: function(){
+            this.navigation_method = new ROSLIB.Topic({
+                ros: this.ros,
+                name: '/navigation_method',
+                messageType: 'std_msgs/String'
+            })
+        },
+
+        set_movement_assistant: function(){
+            this.movement_assistant = new ROSLIB.Topic({
+                ros: this.ros,
+                name: 'movement_assistant_message',
+                messageType: 'std_msgs/String'
+            });
         },
 
         set_camera: function(){
@@ -88,66 +121,7 @@ var app = new Vue({
                 rootObject: this.navigation_viewer.scene
             });
 
-            /*
-            this.pose = new ROS3D.Pose({
-                ros: this.ros,
-                topic: '/particlecloud',
-                keep: 10,
-                length: 10,
-                tfClient: this.tf_client,
-                rootObject: this.navigation_viewer.scene
-            })
-
-            this.odometry = new ROS3D.Odometry({
-                ros: this.ros,
-                tfClient: this.tf_client,
-                rootObject: this.navigation_viewer.scene
-            })
-            */
         },
-
-
-        /*
-        assistant: function(){
-            this.movement_assistant = new ROSLIB.Topic({
-                ros: this.ros,
-                name: '/movement_assistant',
-                messageType: std_msgs/String,
-            });
-
-            this.movement_assistant.subscribe(function(msg){
-                this.movement_assistant_message = msg
-                console.log("SIIIi")
-            });
-        }
-
-
-        set_cmd: function(){
-            this.cmd_topic = new ROSLIB.Topic({
-                ros: this.ros,
-                name: '/cmd_vel',
-                messageType: 'geometry_msgs/Twist',
-            })
-        }
-
-        move: function(){
-            this.message = new ROSLIB.Message({
-                linear: linear,
-                angular: angular
-            })
-            this.set_cmd()
-            this.cmd_topic.publish(this.message)
-        }
-
-        stop: function(linear, angular){
-            this.message = new ROSLIB.Message({
-                linear: {x: 0, y:0, z: 0},
-                angular: {x: 0, y:0, z:0}
-            })
-            this.set_cmd()
-            this.cmd_topic.publish(this.message)
-        }
-            */
     },
 
 
