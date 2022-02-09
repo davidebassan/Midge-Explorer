@@ -51,3 +51,6 @@
 ```
  roslaunch midge world.launch 
 ```
+```
+rosrun midge midge.py
+```
