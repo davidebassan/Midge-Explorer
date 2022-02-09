@@ -2,9 +2,11 @@
 import rospy
 import tf
 import random
+from actuators.actuators import Move
 from geometry_msgs.msg import Twist
 from nav_msgs.msg import OccupancyGrid
 from std_msgs.msg import String
+from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 
 class Exploration:
     def __init__(self):
@@ -19,6 +21,7 @@ class Exploration:
         self.obstacle = None
         self.obstacle_state = None
         self.movement_instruction_assistant = rospy.Publisher('movement_assistant', String)
+        self.move = Move()
 
     def get_map(self):
         self.map = rospy.wait_for_message(self.topic, OccupancyGrid)
@@ -96,7 +99,8 @@ class Exploration:
         'RIGHT, FRONT-RIGHT, FRONT, FRONT-LEFT, LEFT'
         if self.obstacle['front'] > 1 and self.obstacle['left'] > 1 and self.obstacle['right'] > 1:
             self.obstacle_state = 'No obstacle found'
-        if self.obstacle['front'] < 1 and self.obstacle['left'] > 1 and self.obstacle['right'] > 1:
+
+        elif self.obstacle['front'] < 1 and self.obstacle['left'] > 1 and self.obstacle['right'] > 1:
             self.movement_instruction_assistant.publish('Found obstacle in front')
 
         elif self.obstacle['front'] > 1 and self.obstacle['left'] > 1 and self.obstacle['right'] < 1:
@@ -165,16 +169,15 @@ class Exploration:
 
         elif self.obstacle['front'] < 1 and self.obstacle['left'] < 1 and self.obstacle['right'] < 1:
             self.obstacle_state = 'Found obstacle ahead'
-            rospy.loginfo(self.obstacle)
-            linear_x = -4
-            angular_z = 4
+            self.move.rotate(180)
+            #linear_x = -4
+            #angular_z = 4
 
         else:
             self.obstacle_state = 'Error'
-            rospy.loginfo(self.obstacle)
 
 
-        rospy.loginfo(self.obstacle_state)
+        #rospy.loginfo(self.obstacle_state)
 
         msg.linear.x = linear_x
         msg.angular.z = angular_z

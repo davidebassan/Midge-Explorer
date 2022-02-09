@@ -30,10 +30,6 @@
   <arg name="world_file" default="$(find midge)/worlds/house.world"/>
 
 
-
-
-
-
   <!-- Launch Gazebo World -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="use_sim_time" value="true"/>

@@ -23,7 +23,6 @@ class Move:
         self.coords.linear.x = 4*data.axes[1]
         self.coords.angular.z = 4*data.axes[0]
 
-
     def joystick_move(self):
         self.cmd_vel.publish(self.coords)
 

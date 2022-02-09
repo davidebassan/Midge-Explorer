@@ -5,7 +5,7 @@ raytrace_range: 3.0
 # TODO: FOOTPRINT CORRETTO!
 footprint: [[0,0],[0,0],[0,0],[0,0]]
 #robot_radius: ir_of_robot
-inflation_radius: 0.55
+inflation_radius: 0.53
 
 observation_sources: laser_scan_sensor
 

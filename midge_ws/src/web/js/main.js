@@ -2,7 +2,7 @@ var app = new Vue({
     el: '#app',
     data: {
         navigation_method: null,
-        autonomous: false,
+        autonomous: true,
         connected: false,
         ros: null,
         address: '0.0.0.0',
