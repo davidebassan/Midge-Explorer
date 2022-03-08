@@ -1,0 +1,48 @@
+top {
+}
+
+.connect {
+    margin: auto;
+    width: 20%;
+    text-align: center;
+}
+
+.relevance-text{
+    color: black
+}
+
+.full-width{
+    width: 100%;
+    margin-top: 0px;
+}
+
+pre {
+    overflow-x: auto;
+    height: 150px;
+    background-color: black;
+    color: white;
+}
+pre code {
+    overflow-wrap: normal;
+    white-space: pre;
+}
+/*
+canvas{
+    display: inline-block !important;
+    width: 100% !important;
+    height: auto !important;
+}
+*/
+
+.sensor{
+    display: inline-block;
+    position: relative;
+}
+
+body{
+    background-color: #343b47;
+    color: #b5bdc9;
+}
+nav{
+    padding: 10px;
+}
