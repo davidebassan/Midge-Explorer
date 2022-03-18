@@ -1,6 +1,6 @@
 # Explorer
 
-***Thesis and Laboratory project***
+***Thesis***
 
 
 ## Requirements
