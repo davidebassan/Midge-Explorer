@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Midge Explorer</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/eventemitter2@6.4.9/lib/eventemitter2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/roslib@1.4.1/build/roslib.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/easeljs@1.0.2/lib/easeljs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ros2d@0.10.0/build/ros2d.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="css/joystick.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+<div id="app">
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand" href="#">Midge Explorer</a>
+        <div v-if="connected" class="btn-group" role="group" aria-label="Modalità di guida">
+            <button v-for="m in modes" :key="m.id" @click="set_mode(m.id)"
+                    class="btn" :class="mode === m.id ? 'btn-warning' : 'btn-outline-secondary'">{{ m.label }}</button>
+        </div>
+        <span class="relevance-text">
+            Stato: <span :class="connected ? 'text-success' : 'text-danger'">{{ connected ? 'connesso' : 'non connesso' }}</span>
+        </span>
+    </nav>
+
+    <div v-if="!connected" class="container connect">
+        <div class="input-group mb-3">
+            <input type="text" v-model="address" class="form-control" placeholder="host" aria-label="Indirizzo del robot">
+            <button @click="connect" class="btn btn-primary">Connetti</button>
+        </div>
+    </div>
+
+    <div v-show="connected" class="container-fluid">
+        <div class="row g-3">
+            <div class="col-lg-6">
+                <h6>Camera</h6>
+                <img v-if="connected" class="camera" :src="camera_url" alt="Camera del robot">
+            </div>
+            <div class="col-lg-6">
+                <h6>Mappa <small v-if="mode === 'nav'">· clicca per inviare un obiettivo a Nav2</small></h6>
+                <div id="map"></div>
+            </div>
+        </div>
+
+        <div class="row g-3 mt-1">
+            <div class="col-lg-6">
+                <h6>Sensori</h6>
+                <table class="table table-dark table-sm">
+                    <thead><tr><th>Ostacolo</th><th>Destra</th><th>Fronte</th><th>Sinistra</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ obstacle }}</td>
+                            <td v-for="side in ['right', 'front', 'left']" :key="side"
+                                :class="{'text-warning': regions[side] < 1}">{{ regions[side] !== undefined ? regions[side].toFixed(2) + ' m' : '-' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div v-show="mode === 'joy'" class="joystick-area">
+                    <div class="wrapper"><div id="joystick"></div></div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <h6>Log</h6>
+                <pre><code v-for="(log, i) in logs" :key="i">{{ log }}
+</code></pre>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="js/joystick.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

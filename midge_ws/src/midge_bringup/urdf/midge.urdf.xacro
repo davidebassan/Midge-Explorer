@@ -1,0 +1,140 @@
+<?xml version="1.0"?>
+<!-- Midge: differential drive robot with a Hokuyo lidar and a camera -->
+<robot name="midge" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:property name="wheel_radius" value="0.1"/>
+  <xacro:property name="wheel_separation" value="0.5"/>
+
+  <xacro:include filename="$(find midge_bringup)/urdf/midge.gazebo.xacro"/>
+
+  <material name="black"><color rgba="0.1 0.1 0.1 1"/></material>
+  <material name="orange"><color rgba="1.0 0.45 0.0 1"/></material>
+  <material name="red"><color rgba="0.8 0.0 0.0 1"/></material>
+  <material name="grey"><color rgba="0.5 0.5 0.5 1"/></material>
+
+  <!-- base_footprint lies on the ground, base_link is the chassis centre (wheel axle height) -->
+  <link name="base_footprint"/>
+
+  <joint name="base_footprint_joint" type="fixed">
+    <origin xyz="0 0 ${wheel_radius}" rpy="0 0 0"/>
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+  </joint>
+
+  <!-- base_link collisions are left unnamed: sdformat only applies the friction in
+       midge.gazebo.xacro to merged collisions that keep their default names -->
+  <link name="base_link">
+    <inertial>
+      <mass value="15.0"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.1" ixy="0" ixz="0" iyy="0.1" iyz="0" izz="0.1"/>
+    </inertial>
+
+    <collision>
+      <origin xyz="0 0 0.05" rpy="0 0 0"/>
+      <geometry><cylinder length="0.2" radius="0.25"/></geometry>
+    </collision>
+    <visual name="chassis_visual">
+      <origin xyz="0 0 0.05" rpy="0 0 0"/>
+      <geometry><cylinder length="0.2" radius="0.25"/></geometry>
+      <material name="black"/>
+    </visual>
+
+    <collision>
+      <origin xyz="-0.15 0 -0.05" rpy="0 0 0"/>
+      <geometry><sphere radius="0.0499"/></geometry>
+    </collision>
+    <visual name="back_caster_visual">
+      <origin xyz="-0.15 0 -0.05" rpy="0 0 0"/>
+      <geometry><sphere radius="0.05"/></geometry>
+      <material name="grey"/>
+    </visual>
+
+    <collision>
+      <origin xyz="0.15 0 -0.05" rpy="0 0 0"/>
+      <geometry><sphere radius="0.0499"/></geometry>
+    </collision>
+    <visual name="front_caster_visual">
+      <origin xyz="0.15 0 -0.05" rpy="0 0 0"/>
+      <geometry><sphere radius="0.05"/></geometry>
+      <material name="grey"/>
+    </visual>
+  </link>
+
+  <xacro:macro name="wheel" params="side y">
+    <joint name="${side}_wheel_hinge" type="continuous">
+      <origin xyz="0 ${y} 0" rpy="0 0 0"/>
+      <parent link="base_link"/>
+      <child link="${side}_wheel"/>
+      <axis xyz="0 1 0"/>
+      <limit effort="10000" velocity="1000"/>
+      <dynamics damping="1.0" friction="1.0"/>
+    </joint>
+
+    <link name="${side}_wheel">
+      <inertial>
+        <mass value="5"/>
+        <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+        <inertia ixx="0.1" ixy="0" ixz="0" iyy="0.1" iyz="0" izz="0.1"/>
+      </inertial>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+        <geometry><cylinder radius="${wheel_radius}" length="0.05"/></geometry>
+      </collision>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+        <geometry><cylinder radius="${wheel_radius}" length="0.05"/></geometry>
+        <material name="orange"/>
+      </visual>
+    </link>
+  </xacro:macro>
+
+  <xacro:wheel side="left" y="${wheel_separation / 2}"/>
+  <xacro:wheel side="right" y="${-wheel_separation / 2}"/>
+
+  <joint name="camera_joint" type="fixed">
+    <origin xyz="0.26 0 0" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="camera"/>
+  </joint>
+
+  <link name="camera">
+    <inertial>
+      <mass value="0.1"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+    </inertial>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.05 0.05 0.05"/></geometry>
+    </collision>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.05 0.05 0.05"/></geometry>
+      <material name="red"/>
+    </visual>
+  </link>
+
+  <joint name="hokuyo_joint" type="fixed">
+    <origin xyz="0.2 0 0.2" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="hokuyo"/>
+  </joint>
+
+  <link name="hokuyo">
+    <inertial>
+      <mass value="1e-5"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+    </inertial>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.1 0.1 0.1"/></geometry>
+    </collision>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><mesh filename="package://midge_bringup/meshes/hokuyo.dae"/></geometry>
+    </visual>
+  </link>
+
+</robot>

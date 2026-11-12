@@ -1,0 +1,17 @@
+services:
+  midge:
+    build: ./docker
+    image: midge-explorer:jazzy
+    container_name: midge
+    # Ports are bound to localhost only: the desktop has no password.
+    ports:
+      - "127.0.0.1:6080:6080"   # desktop with Gazebo and RViz (noVNC)
+      - "127.0.0.1:8000:8000"   # web app
+      - "127.0.0.1:9090:9090"   # rosbridge websocket
+      - "127.0.0.1:8080:8080"   # web_video_server (camera stream)
+    volumes:
+      - ./midge_ws:/midge_ws
+    shm_size: 1gb
+    environment:
+      - HEADLESS=0
+    command: ros2 launch midge_bringup sim.launch.py

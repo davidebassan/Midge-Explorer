@@ -1,4 +1,8 @@
 midge_ws/build
+midge_ws/install
+midge_ws/log
 midge_ws/devel
 *.catkin_workspace
 *.idea
+__pycache__/
+.DS_Store
